@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-$_SESSION['people']=[];
-$_SESSION['id']=0;
+// $_SESSION['people']=[];
+// $_SESSION['id']=0;
 $person = array
     (
         'id'=>1,
@@ -10,26 +10,35 @@ $person = array
         'Pavarde'=>'Judenis',
         'Adresas'=>'Vilnius'
     );
-    // $_SESSION['people'][$_SESSION['id']]=$person;
-    // $_SESSION['id']+=1;
-    // $_SESSION['people'][$_SESSION['id']]=$person;
-    // $_SESSION['id']+=1;
+//     $_SESSION['people'][$_SESSION['id']]=$person;
+//     $_SESSION['id']+=1;
+//     $_SESSION['people'][$_SESSION['id']]=$person;
+//     $_SESSION['id']+=1;
 // array_push($_SESSION['people'], $person);
 // print_r ($_SESSION['people']);
 
 if(isset($_GET['fname'])){
+    if($_GET['fname']!="" && $_GET['lname']!="" && $_GET['adress']!=""){
     $person['Vardas']=$_GET['fname'];
     $person['Pavarde']=$_GET['lname'];
     $person['Adresas']=$_GET['adress'];
+    if(isset($_GET['id'])){
+    $person['id']=$_GET['id'];
+    }
     save($person);
-}
-
+}};
+// TODO sutvarkyti permetamus numerius
 function save($person){
+    if(isset($person['id'])){
+        $_SESSION['people'][$person['id']]=$person;
+    }else{
     $_SESSION['people'][$_SESSION['id']]=$person;
     $_SESSION['id']+=1;
 
-}
-//session_unset();
+}}
+if(isset($_GET['delete'])){
+    unset($_SESSION['people'][$_GET['delete']]);
+  };
 ?>
 
 <!DOCTYPE html>
@@ -76,8 +85,9 @@ function save($person){
     <th>Vardas</th>
     <th>Pavardė</th>
     <th>Adresas</th>
+    <th>Delete</th>
+    <th>Update</th>
   </tr>
-  
   
   <?php
   foreach ($_SESSION['people'] as $key => $person) {
@@ -88,6 +98,14 @@ function save($person){
     <td><?=$person['Vardas']?></td>
     <td><?=$person['Pavarde']?></td>
     <td><?=$person['Adresas']?></td>
+    <td><form action=''>
+        <input type="hidden" name="delete" value="<?=$key?>">
+        <input type="submit" value="Delete">
+    </form></td>
+    <td><form action='update.php'>
+        <input type="hidden" name="update" value="<?=$key?>">
+        <input type="submit" value="Update">
+    </form></td>
 </tr>
 <?php
   }
